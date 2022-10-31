@@ -13,7 +13,7 @@ var audioElement = document.getElementsByClassName("audio-element")[0];
 var audioElementSource = document.getElementsByClassName("audio-element")[0]
     .getElementsByTagName("source")[0];
 var textIndicatorOfAudiPlaying = document.getElementsByClassName("text-indication-of-audio-playing")[0];
-
+var URL = '/upload_voice'
 //Listeners
 
 //Listen to start recording button
@@ -170,6 +170,13 @@ function stopAudioRecording() {
 
             //hide recording control button & return record icon
             handleHidingRecordingControlButtons();
+
+            // отправка аудио
+
+            let fd = new FormData();
+            fd.append('voice', audioAsblob);
+            sendVoice(fd);
+
         })
         .catch(error => {
             //Error handling structure
@@ -182,6 +189,17 @@ function stopAudioRecording() {
             };
         });
 }
+
+async function sendVoice(form) {
+    let promise = await fetch(URL, {
+        method: 'POST',
+        body: form});
+    if (promise.ok) {
+        let response =  await promise.json();
+        console.log(response.data);
+    }
+}
+
 
 /** Cancel the currently started audio recording */
 function cancelAudioRecording() {
